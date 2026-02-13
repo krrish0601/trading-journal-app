@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,24 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+// Trades table for trading journal
+export const trades = mysqlTable("trades", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  symbol: varchar("symbol", { length: 20 }).notNull(),
+  entryDate: timestamp("entryDate").notNull(),
+  entryPrice: decimal("entryPrice", { precision: 10, scale: 4 }).notNull(),
+  exitDate: timestamp("exitDate").notNull(),
+  exitPrice: decimal("exitPrice", { precision: 10, scale: 4 }).notNull(),
+  quantity: decimal("quantity", { precision: 12, scale: 4 }).notNull(),
+  tradeType: mysqlEnum("tradeType", ["long", "short"]).notNull(),
+  notes: text("notes"),
+  tags: varchar("tags", { length: 255 }),
+  pnl: decimal("pnl", { precision: 12, scale: 2 }),
+  pnlPercent: decimal("pnlPercent", { precision: 8, scale: 4 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Trade = typeof trades.$inferSelect;
+export type InsertTrade = typeof trades.$inferInsert;
