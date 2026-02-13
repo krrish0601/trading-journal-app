@@ -5,12 +5,12 @@ import { ScreenContainer } from "@/components/screen-container";
 import { TradeCard } from "@/components/trade-card";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useEffect, useState } from "react";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useLocalAuth();
   const insets = useSafeAreaInsets();
   const [todayStats, setTodayStats] = useState({
     trades: 0,
@@ -53,21 +53,7 @@ export default function HomeScreen() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <ScreenContainer className="justify-center items-center p-6">
-        <Text className="text-2xl font-bold text-foreground mb-4 text-center">
-          Welcome to Trading Journal
-        </Text>
-        <Text className="text-base text-muted text-center mb-8">
-          Sign in to start tracking your trades and performance metrics.
-        </Text>
-        <TouchableOpacity className="bg-primary px-8 py-3 rounded-full">
-          <Text className="text-background font-semibold">Sign In</Text>
-        </TouchableOpacity>
-      </ScreenContainer>
-    );
-  }
+
 
   const recentTrades = trades.slice(0, 5);
   const isLoading = tradesLoading;
@@ -147,23 +133,43 @@ export default function HomeScreen() {
           </View>
         }
         ListFooterComponent={
-          <View className="p-4 pb-8 flex-row gap-3">
-            <TouchableOpacity
-              onPress={() => router.push("/trade-entry")}
-              className="flex-1 bg-primary py-3 rounded-lg items-center"
-            >
-              <Text className="text-background font-semibold">
-                New Trade
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push("/(tabs)/analytics")}
-              className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
-            >
-              <Text className="text-foreground font-semibold">
-                Analytics
-              </Text>
-            </TouchableOpacity>
+          <View className="p-4 pb-8 gap-3">
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={() => router.push("/trade-entry")}
+                className="flex-1 bg-primary py-3 rounded-lg items-center"
+              >
+                <Text className="text-background font-semibold">
+                  New Trade
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/(tabs)/analytics")}
+                className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
+              >
+                <Text className="text-foreground font-semibold">
+                  Analytics
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={() => router.push("/search-trades")}
+                className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
+              >
+                <Text className="text-foreground font-semibold">
+                  Search
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/export-trades")}
+                className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
+              >
+                <Text className="text-foreground font-semibold">
+                  Export
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         }
         scrollEnabled={true}

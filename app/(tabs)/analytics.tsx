@@ -2,13 +2,14 @@ import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator } from "rea
 import { ScreenContainer } from "@/components/screen-container";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
+import { PerformanceChart } from "@/components/performance-chart";
 
 type TimePeriod = "weekly" | "monthly" | "yearly";
 
 export default function AnalyticsScreen() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useLocalAuth();
   const [period, setPeriod] = useState<TimePeriod>("weekly");
 
   // Calculate date ranges based on period
@@ -33,18 +34,29 @@ export default function AnalyticsScreen() {
 
   const { startDate, endDate } = getDateRange(period);
 
+  const { data: trades = [] } = trpc.trades.list.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+
+  // Filter trades for the selected period
+  const periodTrades = trades.filter((trade) => {
+    const tradeDate = new Date(trade.entryDate);
+    return tradeDate >= startDate && tradeDate <= endDate;
+  });
+
+  // Prepare chart data
+  const chartData = periodTrades.map((trade) => ({
+    date: new Date(trade.entryDate).toLocaleDateString(),
+    pnl: parseFloat(trade.pnl?.toString() || "0"),
+  }));
+
   const { data: metrics, isLoading } = trpc.trades.getMetrics.useQuery(
     { startDate, endDate },
     { enabled: isAuthenticated }
   );
 
-  if (!isAuthenticated) {
-    return (
-      <ScreenContainer className="justify-center items-center">
-        <Text className="text-foreground">Please sign in to view analytics</Text>
-      </ScreenContainer>
-    );
-  }
+
 
   if (isLoading) {
     return (
@@ -89,6 +101,9 @@ export default function AnalyticsScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        {/* Performance Chart */}
+        <PerformanceChart data={chartData} title="Performance Trend" />
 
         {/* Main Metrics */}
         <View className="mb-6">

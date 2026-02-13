@@ -30,3 +30,15 @@
 - [ ] End-to-end user flow testing
 - [ ] Performance optimization
 - [x] Dark mode support
+
+## New Features - Phase 2
+
+- [x] Remove authentication requirement - use local-only mode
+- [x] Trade detail view screen with edit/delete functionality
+- [x] Date picker integration for entry and exit dates
+- [x] Visual chart component for performance trends
+- [x] Search/filter by date range functionality
+- [x] INR currency support alongside USD
+- [x] CSV export functionality
+- [x] PDF/Report export functionality
+- [x] Update home screen to remove sign-in prompt

@@ -89,6 +89,9 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="oauth/callback" />
             <Stack.Screen name="trade-entry" />
+            <Stack.Screen name="trade-detail" />
+            <Stack.Screen name="search-trades" />
+            <Stack.Screen name="export-trades" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

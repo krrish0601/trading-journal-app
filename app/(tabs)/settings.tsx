@@ -1,13 +1,13 @@
 import { ScrollView, Text, View, TouchableOpacity, Switch } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useState } from "react";
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useLocalAuth();
   const colorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
 
@@ -30,9 +30,7 @@ export default function SettingsScreen() {
             <Text className="text-lg font-semibold text-foreground mb-1">
               {user.name || "Trader"}
             </Text>
-            {user.email && (
-              <Text className="text-sm text-muted">{user.email}</Text>
-            )}
+
           </View>
         )}
 

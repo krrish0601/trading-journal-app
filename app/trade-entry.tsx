@@ -10,12 +10,13 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
+import { DatePicker } from "@/components/date-picker";
 
 export default function TradeEntryScreen() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useLocalAuth();
 
   const [symbol, setSymbol] = useState("");
   const [entryDate, setEntryDate] = useState(new Date().toISOString().split("T")[0]);
@@ -26,6 +27,7 @@ export default function TradeEntryScreen() {
   const [tradeType, setTradeType] = useState<"long" | "short">("long");
   const [notes, setNotes] = useState("");
   const [tags, setTags] = useState("");
+  const [currency, setCurrency] = useState<"USD" | "INR">("INR");
 
   const createMutation = trpc.trades.create.useMutation({
     onSuccess: () => {
@@ -60,13 +62,7 @@ export default function TradeEntryScreen() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <ScreenContainer className="justify-center items-center">
-        <Text className="text-foreground">Please sign in to log trades</Text>
-      </ScreenContainer>
-    );
-  }
+
 
   const pnl =
     entryPrice && exitPrice && quantity
@@ -140,6 +136,36 @@ export default function TradeEntryScreen() {
           </View>
         </View>
 
+        {/* Currency Selection */}
+        <View className="mb-4">
+          <Text className="text-sm font-semibold text-foreground mb-2">
+            Currency
+          </Text>
+          <View className="flex-row gap-3">
+            {["INR", "USD"].map((curr) => (
+              <TouchableOpacity
+                key={curr}
+                onPress={() => setCurrency(curr as "USD" | "INR")}
+                className={`flex-1 py-3 rounded-lg items-center ${
+                  currency === curr
+                    ? "bg-primary"
+                    : "bg-surface border border-border"
+                }`}
+              >
+                <Text
+                  className={`font-semibold ${
+                    currency === curr
+                      ? "text-background"
+                      : "text-foreground"
+                  }`}
+                >
+                  {curr}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         {/* Entry Details */}
         <View className="bg-surface rounded-lg p-4 mb-4">
           <Text className="text-sm font-semibold text-foreground mb-3">
@@ -147,13 +173,10 @@ export default function TradeEntryScreen() {
           </Text>
 
           <View className="mb-3">
-            <Text className="text-xs text-muted mb-1">Date</Text>
-            <TextInput
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#999"
+            <DatePicker
               value={entryDate}
-              onChangeText={setEntryDate}
-              className="bg-background border border-border rounded-lg p-3 text-foreground"
+              onChange={setEntryDate}
+              label="Date"
             />
           </View>
 
@@ -177,13 +200,10 @@ export default function TradeEntryScreen() {
           </Text>
 
           <View className="mb-3">
-            <Text className="text-xs text-muted mb-1">Date</Text>
-            <TextInput
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#999"
+            <DatePicker
               value={exitDate}
-              onChangeText={setExitDate}
-              className="bg-background border border-border rounded-lg p-3 text-foreground"
+              onChange={setExitDate}
+              label="Date"
             />
           </View>
 
@@ -229,7 +249,7 @@ export default function TradeEntryScreen() {
                   pnl >= 0 ? "text-success" : "text-error"
                 }`}
               >
-                {pnl >= 0 ? "+" : ""}{pnl.toFixed(2)}
+                {pnl >= 0 ? "+" : ""}{currency === "INR" ? "₹" : "$"}{pnl.toFixed(2)}
               </Text>
               <Text
                 className={`text-lg font-semibold ${

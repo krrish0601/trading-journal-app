@@ -3,12 +3,12 @@ import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { TradeCard } from "@/components/trade-card";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/use-auth";
+import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
 
 export default function TradesScreen() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useLocalAuth();
   const [filterType, setFilterType] = useState<"all" | "long" | "short">("all");
 
   const { data: trades = [], isLoading } = trpc.trades.list.useQuery(
@@ -21,13 +21,7 @@ export default function TradesScreen() {
     return trade.tradeType === filterType;
   });
 
-  if (!isAuthenticated) {
-    return (
-      <ScreenContainer className="justify-center items-center">
-        <Text className="text-foreground">Please sign in to view trades</Text>
-      </ScreenContainer>
-    );
-  }
+
 
   return (
     <ScreenContainer className="p-0">
