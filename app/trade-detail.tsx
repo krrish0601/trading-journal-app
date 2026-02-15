@@ -228,6 +228,12 @@ export default function TradeDetailScreen() {
         {/* Actions */}
         <View className="flex-row gap-3 mb-8">
           <TouchableOpacity
+            onPress={() => router.push(`/trade-edit?id=${trade.id}`)}
+            className="flex-1 bg-primary py-3 rounded-lg items-center"
+          >
+            <Text className="text-background font-bold">Edit Trade</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={handleDelete}
             disabled={deleteMutation.isPending}
             className="flex-1 bg-error/10 py-3 rounded-lg items-center"
@@ -235,7 +241,7 @@ export default function TradeDetailScreen() {
             {deleteMutation.isPending ? (
               <ActivityIndicator color="#EF4444" />
             ) : (
-              <Text className="text-error font-bold">Delete Trade</Text>
+              <Text className="text-error font-bold">Delete</Text>
             )}
           </TouchableOpacity>
         </View>

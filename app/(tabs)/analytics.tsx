@@ -1,4 +1,5 @@
 import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
@@ -9,6 +10,7 @@ import { PerformanceChart } from "@/components/performance-chart";
 type TimePeriod = "weekly" | "monthly" | "yearly";
 
 export default function AnalyticsScreen() {
+  const router = useRouter();
   const { isAuthenticated } = useLocalAuth();
   const [period, setPeriod] = useState<TimePeriod>("weekly");
 
@@ -104,6 +106,15 @@ export default function AnalyticsScreen() {
 
         {/* Performance Chart */}
         <PerformanceChart data={chartData} title="Performance Trend" />
+
+        {/* Stats Dashboard Button */}
+        <TouchableOpacity
+          onPress={() => router.push("/stats-dashboard")}
+          className="bg-primary/20 border border-primary rounded-lg p-4 mb-6 flex-row justify-between items-center"
+        >
+          <Text className="text-primary font-semibold">View Detailed Statistics</Text>
+          <Text className="text-primary text-lg">→</Text>
+        </TouchableOpacity>
 
         {/* Main Metrics */}
         <View className="mb-6">

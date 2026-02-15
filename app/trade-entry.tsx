@@ -6,12 +6,15 @@ import {
   View,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
+import React from "react";
 import { DatePicker } from "@/components/date-picker";
 
 export default function TradeEntryScreen() {
@@ -77,8 +80,12 @@ export default function TradeEntryScreen() {
       : 0;
 
   return (
-    <ScreenContainer className="p-4">
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1"
+    >
+      <ScreenContainer className="p-4">
+        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <View className="flex-row justify-between items-center mb-6">
           <Text className="text-3xl font-bold text-foreground">
             New Trade
@@ -306,7 +313,8 @@ export default function TradeEntryScreen() {
             </Text>
           )}
         </TouchableOpacity>
-      </ScrollView>
-    </ScreenContainer>
+        </ScrollView>
+      </ScreenContainer>
+    </KeyboardAvoidingView>
   );
 }

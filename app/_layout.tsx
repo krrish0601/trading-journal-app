@@ -92,6 +92,8 @@ export default function RootLayout() {
             <Stack.Screen name="trade-detail" />
             <Stack.Screen name="search-trades" />
             <Stack.Screen name="export-trades" />
+            <Stack.Screen name="trade-edit" />
+            <Stack.Screen name="stats-dashboard" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

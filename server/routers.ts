@@ -5,6 +5,9 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 
+// Local user ID for offline trading journal
+const LOCAL_USER_ID = 1;
+
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
@@ -20,14 +23,14 @@ export const appRouter = router({
   }),
 
   trades: router({
-    list: protectedProcedure.query(({ ctx }) => db.getUserTrades(ctx.user.id)),
-    listByDateRange: protectedProcedure
+    list: publicProcedure.query(({ ctx }) => db.getUserTrades(LOCAL_USER_ID)),
+    listByDateRange: publicProcedure
       .input(z.object({ startDate: z.date(), endDate: z.date() }))
-      .query(({ ctx, input }) => db.getUserTrades(ctx.user.id, input.startDate, input.endDate)),
-    get: protectedProcedure
+      .query(({ ctx, input }) => db.getUserTrades(LOCAL_USER_ID, input.startDate, input.endDate)),
+    get: publicProcedure
       .input(z.object({ id: z.number() }))
       .query(({ input }) => db.getTrade(input.id)),
-    create: protectedProcedure
+    create: publicProcedure
       .input(
         z.object({
           symbol: z.string().min(1).max(20),
@@ -47,7 +50,7 @@ export const appRouter = router({
           : (input.entryPrice - input.exitPrice) * input.quantity;
         const pnlPercent = ((input.exitPrice - input.entryPrice) / input.entryPrice) * 100;
         return db.createTrade({
-          userId: ctx.user.id,
+          userId: LOCAL_USER_ID,
           symbol: input.symbol,
           entryDate: input.entryDate,
           entryPrice: input.entryPrice.toString(),
@@ -61,7 +64,7 @@ export const appRouter = router({
           pnlPercent: pnlPercent.toString(),
         });
       }),
-    update: protectedProcedure
+    update: publicProcedure
       .input(
         z.object({
           id: z.number(),
@@ -97,12 +100,12 @@ export const appRouter = router({
         }
         return db.updateTrade(input.id, updateData);
       }),
-    delete: protectedProcedure
+    delete: publicProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => db.deleteTrade(input.id)),
-    getMetrics: protectedProcedure
+    getMetrics: publicProcedure
       .input(z.object({ startDate: z.date(), endDate: z.date() }))
-      .query(({ ctx, input }) => db.getPerformanceMetrics(ctx.user.id, input.startDate, input.endDate)),
+      .query(({ ctx, input }) => db.getPerformanceMetrics(LOCAL_USER_ID, input.startDate, input.endDate)),
   }),
 });
 
