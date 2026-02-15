@@ -32,14 +32,17 @@ export default function ExportTradesScreen() {
       if (Platform.OS === "web") {
         // Web: trigger download
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
+        const link = document.createElement("a") as any;
         const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = "hidden";
+        link.href = url;
+        link.download = filename;
+        link.style.display = "none";
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }, 100);
         Alert.alert("Success", "CSV file downloaded");
       } else {
         // Native: share the file
@@ -71,14 +74,17 @@ export default function ExportTradesScreen() {
       if (Platform.OS === "web") {
         // Web: trigger download as text (can be converted to PDF by user)
         const blob = new Blob([report], { type: "text/plain;charset=utf-8;" });
-        const link = document.createElement("a");
+        const link = document.createElement("a") as any;
         const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = "hidden";
+        link.href = url;
+        link.download = filename;
+        link.style.display = "none";
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }, 100);
         Alert.alert("Success", "Report downloaded as text file");
       } else {
         // Native: share the file

@@ -135,7 +135,44 @@ export default function TradesScreen() {
             )}
           </View>
         }
-        ListFooterComponent={<View className="h-8" />}
+        ListFooterComponent={
+          <View className="p-4 pb-8 gap-3">
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={() => router.push("/trade-entry")}
+                className="flex-1 bg-primary py-3 rounded-lg items-center"
+              >
+                <Text className="text-background font-semibold">New Trade</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/trades-grouped")}
+                className="flex-1 bg-success/20 border border-success py-3 rounded-lg items-center"
+              >
+                <Text className="text-success font-semibold">W/L Group</Text>
+              </TouchableOpacity>
+            </View>
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={() => router.push("/symbol-filter")}
+                className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
+              >
+                <Text className="text-foreground font-semibold">By Symbol</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/trade-templates")}
+                className="flex-1 bg-surface border border-border py-3 rounded-lg items-center"
+              >
+                <Text className="text-foreground font-semibold">Templates</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push("/calendar-heatmap")}
+              className="bg-surface border border-border py-3 rounded-lg items-center"
+            >
+              <Text className="text-foreground font-semibold">Calendar Heatmap</Text>
+            </TouchableOpacity>
+          </View>
+        }
         scrollEnabled={true}
         contentContainerStyle={{ flexGrow: 1 }}
       />

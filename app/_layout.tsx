@@ -94,6 +94,10 @@ export default function RootLayout() {
             <Stack.Screen name="export-trades" />
             <Stack.Screen name="trade-edit" />
             <Stack.Screen name="stats-dashboard" />
+            <Stack.Screen name="trades-grouped" />
+            <Stack.Screen name="symbol-filter" />
+            <Stack.Screen name="trade-templates" />
+            <Stack.Screen name="calendar-heatmap" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

@@ -40,9 +40,27 @@ export const trades = mysqlTable("trades", {
   tags: varchar("tags", { length: 255 }),
   pnl: decimal("pnl", { precision: 12, scale: 2 }),
   pnlPercent: decimal("pnlPercent", { precision: 8, scale: 4 }),
+  imageUrls: text("imageUrls"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
+
+export const tradeTemplates = mysqlTable("tradeTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 100 }).notNull(),
+  symbol: varchar("symbol", { length: 20 }).notNull(),
+  tradeType: mysqlEnum("tradeType", ["long", "short"]).notNull(),
+  riskPercent: decimal("riskPercent", { precision: 5, scale: 2 }),
+  rewardPercent: decimal("rewardPercent", { precision: 5, scale: 2 }),
+  notes: text("notes"),
+  tags: varchar("tags", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type TradeTemplate = typeof tradeTemplates.$inferSelect;
+export type InsertTradeTemplate = typeof tradeTemplates.$inferInsert;
 
 export type Trade = typeof trades.$inferSelect;
 export type InsertTrade = typeof trades.$inferInsert;

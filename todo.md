@@ -55,3 +55,12 @@
 - [x] Add trade editing capability with save functionality
 - [x] Implement risk/reward ratio calculations
 - [x] Create trade statistics dashboard with streaks and analysis
+
+## New Features - Phase 4
+
+- [x] Add trade filtering by symbol screen
+- [x] Implement trade templates for frequently used setups
+- [x] Create calendar heatmap view for trading activity
+- [x] Fix CSV/PDF download functionality
+- [x] Add image upload capability for trade screenshots
+- [x] Create winning trades vs losing trades grouped view

@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
@@ -16,6 +17,7 @@ import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
 import React from "react";
 import { DatePicker } from "@/components/date-picker";
+import { ImagePickerModal } from "@/components/image-picker-modal";
 
 export default function TradeEntryScreen() {
   const router = useRouter();
@@ -31,6 +33,8 @@ export default function TradeEntryScreen() {
   const [notes, setNotes] = useState("");
   const [tags, setTags] = useState("");
   const [currency, setCurrency] = useState<"USD" | "INR">("INR");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [showImagePicker, setShowImagePicker] = useState(false);
 
   const createMutation = trpc.trades.create.useMutation({
     onSuccess: () => {
@@ -286,7 +290,7 @@ export default function TradeEntryScreen() {
         </View>
 
         {/* Tags */}
-        <View className="mb-6">
+        <View className="mb-4">
           <Text className="text-sm font-semibold text-foreground mb-2">
             Tags
           </Text>
@@ -297,6 +301,43 @@ export default function TradeEntryScreen() {
             onChangeText={setTags}
             className="bg-surface border border-border rounded-lg p-3 text-foreground"
           />
+        </View>
+
+        {/* Trade Screenshots */}
+        <View className="mb-6">
+          <View className="flex-row justify-between items-center mb-3">
+            <Text className="text-sm font-semibold text-foreground">
+              Trade Screenshots
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowImagePicker(true)}
+              className="bg-primary/20 border border-primary px-3 py-1 rounded-full"
+            >
+              <Text className="text-primary text-xs font-semibold">+ Add</Text>
+            </TouchableOpacity>
+          </View>
+          {selectedImages.length > 0 && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="gap-2">
+              {selectedImages.map((uri, index) => (
+                <View key={index} className="relative">
+                  <Image
+                    source={{ uri }}
+                    className="w-20 h-20 rounded-lg"
+                  />
+                  <TouchableOpacity
+                    onPress={() =>
+                      setSelectedImages(
+                        selectedImages.filter((_, i) => i !== index)
+                      )
+                    }
+                    className="absolute top-0 right-0 bg-error rounded-full w-5 h-5 items-center justify-center"
+                  >
+                    <Text className="text-background text-xs font-bold">x</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* Submit Button */}
@@ -315,6 +356,14 @@ export default function TradeEntryScreen() {
         </TouchableOpacity>
         </ScrollView>
       </ScreenContainer>
+      <ImagePickerModal
+        visible={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onImagesSelected={(images) => {
+          setSelectedImages([...selectedImages, ...images]);
+          setShowImagePicker(false);
+        }}
+      />
     </KeyboardAvoidingView>
   );
 }
