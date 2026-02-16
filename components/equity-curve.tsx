@@ -1,5 +1,6 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, ScrollView } from "react-native";
 import { useColors } from "@/hooks/use-colors";
+import Svg, { Line, Polyline, Circle, Text as SvgText } from "react-native-svg";
 
 interface EquityCurveProps {
   trades: Array<{
@@ -75,10 +76,10 @@ export function EquityCurve({ trades, height = 250 }: EquityCurveProps) {
       </View>
 
       {/* SVG Chart */}
-      <View style={{ height, backgroundColor: "transparent" }}>
-        <svg width={width} height={height} style={{ overflow: "visible" }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <Svg width={Math.max(width, 300)} height={height}>
           {/* Grid lines */}
-          <line
+          <Line
             x1={padding}
             y1={height - padding}
             x2={width - padding}
@@ -89,7 +90,7 @@ export function EquityCurve({ trades, height = 250 }: EquityCurveProps) {
 
           {/* Zero line */}
           {minPnl < 0 && maxPnl > 0 && (
-            <line
+            <Line
               x1={padding}
               y1={height - padding - ((0 - minPnl) / range) * graphHeight}
               x2={width - padding}
@@ -101,7 +102,7 @@ export function EquityCurve({ trades, height = 250 }: EquityCurveProps) {
           )}
 
           {/* Curve area (gradient effect with opacity) */}
-          <polyline
+          <Polyline
             points={svgPoints}
             fill="none"
             stroke={pnlColor}
@@ -115,7 +116,7 @@ export function EquityCurve({ trades, height = 250 }: EquityCurveProps) {
             const x = padding + (index / Math.max(points.length - 1, 1)) * graphWidth;
             const y = height - padding - ((pnl - minPnl) / range) * graphHeight;
             return (
-              <circle
+              <Circle
                 key={index}
                 cx={x}
                 cy={y}
@@ -127,14 +128,26 @@ export function EquityCurve({ trades, height = 250 }: EquityCurveProps) {
           })}
 
           {/* Y-axis labels */}
-          <text x={padding - 10} y={height - padding + 15} fontSize="12" fill={colors.muted} textAnchor="end">
+          <SvgText
+            x={padding - 10}
+            y={height - padding + 15}
+            fontSize="12"
+            fill={colors.muted}
+            textAnchor="end"
+          >
             ₹{minPnl.toFixed(0)}
-          </text>
-          <text x={padding - 10} y={padding + 5} fontSize="12" fill={colors.muted} textAnchor="end">
+          </SvgText>
+          <SvgText
+            x={padding - 10}
+            y={padding + 5}
+            fontSize="12"
+            fill={colors.muted}
+            textAnchor="end"
+          >
             ₹{maxPnl.toFixed(0)}
-          </text>
-        </svg>
-      </View>
+          </SvgText>
+        </Svg>
+      </ScrollView>
 
       {/* Statistics */}
       <View className="flex-row gap-2 mt-4">

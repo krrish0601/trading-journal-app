@@ -91,3 +91,7 @@
 - [x] Add performance comparison (week-over-week, month-over-month)
 - [x] Add time entry option in trade entry form
 - [x] Fix trades download functionality (CSV/PDF)
+
+## Bug Fixes - Phase 8
+
+- [x] Fix analytics screen crash in EquityCurve component
