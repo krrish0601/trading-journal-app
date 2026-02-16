@@ -25,12 +25,15 @@ export default function TradeEntryScreen() {
 
   const [symbol, setSymbol] = useState("");
   const [entryDate, setEntryDate] = useState(new Date().toISOString().split("T")[0]);
+  const [entryTime, setEntryTime] = useState("");
   const [entryPrice, setEntryPrice] = useState("");
   const [exitDate, setExitDate] = useState(new Date().toISOString().split("T")[0]);
+  const [exitTime, setExitTime] = useState("");
   const [exitPrice, setExitPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [tradeType, setTradeType] = useState<"long" | "short">("long");
   const [notes, setNotes] = useState("");
+  const [journalEntry, setJournalEntry] = useState("");
   const [tags, setTags] = useState("");
   const [currency, setCurrency] = useState<"USD" | "INR">("INR");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
@@ -56,12 +59,15 @@ export default function TradeEntryScreen() {
       await createMutation.mutateAsync({
         symbol: symbol.toUpperCase(),
         entryDate: new Date(entryDate),
+        entryTime: entryTime || undefined,
         entryPrice: parseFloat(entryPrice),
         exitDate: new Date(exitDate),
+        exitTime: exitTime || undefined,
         exitPrice: parseFloat(exitPrice),
         quantity: parseFloat(quantity),
         tradeType,
         notes: notes || undefined,
+        journalEntry: journalEntry || undefined,
         tags: tags || undefined,
       });
     } catch (error) {
@@ -191,6 +197,18 @@ export default function TradeEntryScreen() {
             />
           </View>
 
+          <View className="mb-3">
+            <Text className="text-xs text-muted mb-1">Time (HH:MM)</Text>
+            <TextInput
+              placeholder="09:30"
+              placeholderTextColor="#999"
+              value={entryTime}
+              onChangeText={setEntryTime}
+              maxLength={5}
+              className="bg-background border border-border rounded-lg p-3 text-foreground"
+            />
+          </View>
+
           <View>
             <Text className="text-xs text-muted mb-1">Price *</Text>
             <TextInput
@@ -215,6 +233,18 @@ export default function TradeEntryScreen() {
               value={exitDate}
               onChange={setExitDate}
               label="Date"
+            />
+          </View>
+
+          <View className="mb-3">
+            <Text className="text-xs text-muted mb-1">Time (HH:MM)</Text>
+            <TextInput
+              placeholder="14:30"
+              placeholderTextColor="#999"
+              value={exitTime}
+              onChangeText={setExitTime}
+              maxLength={5}
+              className="bg-background border border-border rounded-lg p-3 text-foreground"
             />
           </View>
 
@@ -285,6 +315,22 @@ export default function TradeEntryScreen() {
             onChangeText={setNotes}
             multiline
             numberOfLines={3}
+            className="bg-surface border border-border rounded-lg p-3 text-foreground"
+          />
+        </View>
+
+        {/* Journal Entry */}
+        <View className="mb-4">
+          <Text className="text-sm font-semibold text-foreground mb-2">
+            Trade Journal Entry
+          </Text>
+          <TextInput
+            placeholder="Write your post-trade review here. What went right? What went wrong? What did you learn?"
+            placeholderTextColor="#999"
+            value={journalEntry}
+            onChangeText={setJournalEntry}
+            multiline
+            numberOfLines={4}
             className="bg-surface border border-border rounded-lg p-3 text-foreground"
           />
         </View>

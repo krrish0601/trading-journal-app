@@ -83,3 +83,11 @@
 
 - [x] Fix dark mode toggle not working
 - [x] Implement equity curve visualization chart
+
+## Phase 7 - Additional Features & Download Fix
+
+- [x] Add trade notes persistence for each trade
+- [x] Implement win/loss streak tracking on dashboard
+- [x] Add performance comparison (week-over-week, month-over-month)
+- [x] Add time entry option in trade entry form
+- [x] Fix trades download functionality (CSV/PDF)
