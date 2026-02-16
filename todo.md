@@ -64,3 +64,11 @@
 - [x] Fix CSV/PDF download functionality
 - [x] Add image upload capability for trade screenshots
 - [x] Create winning trades vs losing trades grouped view
+
+## Bug Fixes - Phase 4
+
+- [x] Fix image picker modal - implement proper image selection
+- [x] Fix trade downloads - CSV/PDF export not working
+- [x] Add rich text editor for trade journaling notes
+- [x] Implement time-of-day performance metrics
+- [x] Add trade comparison tool

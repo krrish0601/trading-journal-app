@@ -4,10 +4,10 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
-  ActivityIndicator,
   Alert,
+  Platform,
 } from "react-native";
+import { Image } from "expo-image";
 import { useState } from "react";
 
 interface ImagePickerModalProps {
@@ -22,12 +22,35 @@ export function ImagePickerModal({
   onImagesSelected,
 }: ImagePickerModalProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handlePickImage = async () => {
     try {
-      // Mock implementation - in real app would use expo-image-picker
-      Alert.alert("Info", "Image picker will be available on native platforms");
+      // For web, create a file input
+      if (Platform.OS === "web") {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.multiple = true;
+        input.onchange = (e: any) => {
+          const files = e.target.files;
+          const imageUris: string[] = [];
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = (event: any) => {
+              imageUris.push(event.target.result);
+              if (imageUris.length === files.length) {
+                setSelectedImages([...selectedImages, ...imageUris]);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        input.click();
+      } else {
+        // For native platforms, show info message
+        Alert.alert("Info", "Image picker will be available when running on native platforms (iOS/Android)");
+      }
     } catch (error) {
       Alert.alert("Error", "Failed to pick images");
     }
@@ -35,8 +58,11 @@ export function ImagePickerModal({
 
   const handleTakePhoto = async () => {
     try {
-      // Mock implementation - in real app would use expo-image-picker
-      Alert.alert("Info", "Camera will be available on native platforms");
+      if (Platform.OS === "web") {
+        Alert.alert("Info", "Camera capture is only available on native platforms (iOS/Android)");
+      } else {
+        Alert.alert("Info", "Camera will be available when running on native platforms");
+      }
     } catch (error) {
       Alert.alert("Error", "Failed to take photo");
     }
@@ -47,6 +73,10 @@ export function ImagePickerModal({
   };
 
   const handleConfirm = () => {
+    if (selectedImages.length === 0) {
+      Alert.alert("Error", "Please select at least one image");
+      return;
+    }
     onImagesSelected(selectedImages);
     setSelectedImages([]);
     onClose();
@@ -80,6 +110,15 @@ export function ImagePickerModal({
           </TouchableOpacity>
         </View>
 
+        {/* Info Text */}
+        <View className="bg-surface/50 border border-border rounded-lg p-3 mb-6">
+          <Text className="text-xs text-muted">
+            {Platform.OS === "web"
+              ? "📝 On web: Click Gallery to select images from your computer. Camera capture is available on mobile devices."
+              : "📝 On native: Use Gallery to select from device photos or Camera to take new photos."}
+          </Text>
+        </View>
+
         {/* Selected Images */}
         {selectedImages.length > 0 && (
           <View className="mb-6">
@@ -95,13 +134,14 @@ export function ImagePickerModal({
                 <View key={index} className="mr-3 relative">
                   <Image
                     source={{ uri }}
-                    className="w-24 h-24 rounded-lg"
+                    style={{ width: 100, height: 100 }}
+                    className="rounded-lg"
                   />
                   <TouchableOpacity
                     onPress={() => handleRemoveImage(uri)}
-                    className="absolute top-0 right-0 bg-error rounded-full w-6 h-6 items-center justify-center"
+                    className="absolute top-1 right-1 bg-error rounded-full w-6 h-6 items-center justify-center"
                   >
-                    <Text className="text-background font-bold text-sm">✕</Text>
+                    <Text className="text-background text-xs font-bold">✕</Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -121,9 +161,7 @@ export function ImagePickerModal({
             onPress={handleConfirm}
             disabled={selectedImages.length === 0}
             className={`flex-1 py-3 rounded-lg items-center ${
-              selectedImages.length === 0
-                ? "bg-primary/50"
-                : "bg-primary"
+              selectedImages.length === 0 ? "bg-primary/50" : "bg-primary"
             }`}
           >
             <Text className="text-background font-semibold">

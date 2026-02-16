@@ -98,6 +98,8 @@ export default function RootLayout() {
             <Stack.Screen name="symbol-filter" />
             <Stack.Screen name="trade-templates" />
             <Stack.Screen name="calendar-heatmap" />
+            <Stack.Screen name="time-of-day-metrics" />
+            <Stack.Screen name="trade-comparison" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

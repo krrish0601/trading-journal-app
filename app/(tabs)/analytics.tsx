@@ -227,6 +227,28 @@ export default function AnalyticsScreen() {
           </View>
         </View>
 
+        {/* Advanced Analysis Buttons */}
+        <View className="flex-row gap-3 mb-6">
+          <TouchableOpacity
+            onPress={() => router.push("/time-of-day-metrics")}
+            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+          >
+            <Text className="text-2xl mb-2">⏰</Text>
+            <Text className="text-xs font-semibold text-foreground text-center">
+              Time Analysis
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/trade-comparison")}
+            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+          >
+            <Text className="text-2xl mb-2">⚖️</Text>
+            <Text className="text-xs font-semibold text-foreground text-center">
+              Compare
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Summary Card */}
         {metrics && metrics.totalTrades > 0 ? (
           <View className="bg-primary/10 rounded-lg p-4 mb-8">

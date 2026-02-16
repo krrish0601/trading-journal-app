@@ -31,19 +31,20 @@ export default function ExportTradesScreen() {
 
       if (Platform.OS === "web") {
         // Web: trigger download
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a") as any;
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
         const url = URL.createObjectURL(blob);
+        const link = document.createElement("a") as any;
         link.href = url;
         link.download = filename;
         link.style.display = "none";
         document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
+        // Revoke the object URL after a short delay to allow download to start
         setTimeout(() => {
-          document.body.removeChild(link);
           URL.revokeObjectURL(url);
-        }, 100);
-        Alert.alert("Success", "CSV file downloaded");
+        }, 500);
+        Alert.alert("Success", `CSV file '${filename}' downloaded successfully`);
       } else {
         // Native: share the file
         const fileUri = `${FileSystem.documentDirectory}${filename}`;
@@ -73,19 +74,20 @@ export default function ExportTradesScreen() {
 
       if (Platform.OS === "web") {
         // Web: trigger download as text (can be converted to PDF by user)
-        const blob = new Blob([report], { type: "text/plain;charset=utf-8;" });
-        const link = document.createElement("a") as any;
+        const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
         const url = URL.createObjectURL(blob);
+        const link = document.createElement("a") as any;
         link.href = url;
         link.download = filename;
         link.style.display = "none";
         document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
+        // Revoke the object URL after a short delay to allow download to start
         setTimeout(() => {
-          document.body.removeChild(link);
           URL.revokeObjectURL(url);
-        }, 100);
-        Alert.alert("Success", "Report downloaded as text file");
+        }, 500);
+        Alert.alert("Success", `Report '${filename}' downloaded successfully`);
       } else {
         // Native: share the file
         const fileUri = `${FileSystem.documentDirectory}${filename}`;
