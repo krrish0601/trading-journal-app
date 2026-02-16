@@ -6,9 +6,11 @@ import {
   ScrollView,
   Alert,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Image } from "expo-image";
 import { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 
 interface ImagePickerModalProps {
   visible: boolean;
@@ -22,49 +24,72 @@ export function ImagePickerModal({
   onImagesSelected,
 }: ImagePickerModalProps) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePickImage = async () => {
     try {
-      // For web, create a file input
-      if (Platform.OS === "web") {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.multiple = true;
-        input.onchange = (e: any) => {
-          const files = e.target.files;
-          const imageUris: string[] = [];
-          for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            reader.onload = (event: any) => {
-              imageUris.push(event.target.result);
-              if (imageUris.length === files.length) {
-                setSelectedImages([...selectedImages, ...imageUris]);
-              }
-            };
-            reader.readAsDataURL(file);
-          }
-        };
-        input.click();
-      } else {
-        // For native platforms, show info message
-        Alert.alert("Info", "Image picker will be available when running on native platforms (iOS/Android)");
+      setIsLoading(true);
+
+      // Request permissions for media library
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Denied",
+          "We need permission to access your photo library"
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // Launch image library
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const imageUri = result.assets[0].uri;
+        setSelectedImages([...selectedImages, imageUri]);
       }
     } catch (error) {
       Alert.alert("Error", "Failed to pick images");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleTakePhoto = async () => {
     try {
-      if (Platform.OS === "web") {
-        Alert.alert("Info", "Camera capture is only available on native platforms (iOS/Android)");
-      } else {
-        Alert.alert("Info", "Camera will be available when running on native platforms");
+      setIsLoading(true);
+
+      // Request camera permissions
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Denied",
+          "We need permission to access your camera"
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // Launch camera
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets.length > 0) {
+        const imageUri = result.assets[0].uri;
+        setSelectedImages([...selectedImages, imageUri]);
       }
     } catch (error) {
       Alert.alert("Error", "Failed to take photo");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -98,15 +123,29 @@ export function ImagePickerModal({
         <View className="flex-row gap-3 mb-6">
           <TouchableOpacity
             onPress={handlePickImage}
-            className="flex-1 bg-primary py-3 rounded-lg items-center"
+            disabled={isLoading}
+            className={`flex-1 ${
+              isLoading ? "bg-primary/50" : "bg-primary"
+            } py-3 rounded-lg items-center`}
           >
-            <Text className="text-background font-semibold">📁 Gallery</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-background font-semibold">📁 Gallery</Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleTakePhoto}
-            className="flex-1 bg-primary py-3 rounded-lg items-center"
+            disabled={isLoading}
+            className={`flex-1 ${
+              isLoading ? "bg-primary/50" : "bg-primary"
+            } py-3 rounded-lg items-center`}
           >
-            <Text className="text-background font-semibold">📷 Camera</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-background font-semibold">📷 Camera</Text>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -114,8 +153,8 @@ export function ImagePickerModal({
         <View className="bg-surface/50 border border-border rounded-lg p-3 mb-6">
           <Text className="text-xs text-muted">
             {Platform.OS === "web"
-              ? "📝 On web: Click Gallery to select images from your computer. Camera capture is available on mobile devices."
-              : "📝 On native: Use Gallery to select from device photos or Camera to take new photos."}
+              ? "📝 On web: Image upload is not available. Use the mobile app (iOS/Android) to capture and upload trade screenshots."
+              : "📝 Select images from your device gallery or take a new photo with your camera."}
           </Text>
         </View>
 
@@ -159,9 +198,11 @@ export function ImagePickerModal({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleConfirm}
-            disabled={selectedImages.length === 0}
+            disabled={selectedImages.length === 0 || isLoading}
             className={`flex-1 py-3 rounded-lg items-center ${
-              selectedImages.length === 0 ? "bg-primary/50" : "bg-primary"
+              selectedImages.length === 0 || isLoading
+                ? "bg-primary/50"
+                : "bg-primary"
             }`}
           >
             <Text className="text-background font-semibold">

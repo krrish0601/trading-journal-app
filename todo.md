@@ -72,3 +72,9 @@
 - [x] Add rich text editor for trade journaling notes
 - [x] Implement time-of-day performance metrics
 - [x] Add trade comparison tool
+
+## Phase 5 - Additional Features & Fixes
+
+- [x] Fix image picker for native platforms (iOS/Android)
+- [x] Add symbol-based statistics screen
+- [x] Add monthly performance summary report

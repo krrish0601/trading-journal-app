@@ -267,6 +267,28 @@ export default function StatsDashboardScreen() {
           </View>
         )}
 
+        {/* Advanced Analysis Buttons */}
+        <View className="flex-row gap-3 mb-6">
+          <TouchableOpacity
+            onPress={() => router.push("/symbol-statistics")}
+            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+          >
+            <Text className="text-2xl mb-2">📊</Text>
+            <Text className="text-xs font-semibold text-foreground text-center">
+              Symbol Stats
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/monthly-summary")}
+            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+          >
+            <Text className="text-2xl mb-2">📅</Text>
+            <Text className="text-xs font-semibold text-foreground text-center">
+              Monthly Report
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Top Symbols */}
         {topSymbols.length > 0 && (
           <View className="bg-surface rounded-lg p-4 mb-8">
