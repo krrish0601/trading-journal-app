@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
 import { PerformanceChart } from "@/components/performance-chart";
+import { EquityCurve } from "@/components/equity-curve";
 
 type TimePeriod = "weekly" | "monthly" | "yearly";
 
@@ -106,6 +107,11 @@ export default function AnalyticsScreen() {
 
         {/* Performance Chart */}
         <PerformanceChart data={chartData} title="Performance Trend" />
+
+        {/* Equity Curve */}
+        <View className="mb-6">
+          <EquityCurve trades={trades} />
+        </View>
 
         {/* Stats Dashboard Button */}
         <TouchableOpacity

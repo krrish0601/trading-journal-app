@@ -78,3 +78,8 @@
 - [x] Fix image picker for native platforms (iOS/Android)
 - [x] Add symbol-based statistics screen
 - [x] Add monthly performance summary report
+
+## Phase 6 - Dark Mode Fix & Equity Curve
+
+- [x] Fix dark mode toggle not working
+- [x] Implement equity curve visualization chart

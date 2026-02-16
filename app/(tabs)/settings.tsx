@@ -2,14 +2,16 @@ import { ScrollView, Text, View, TouchableOpacity, Switch } from "react-native";
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useLocalAuth } from "@/hooks/use-local-auth";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useState } from "react";
+import { useThemeContext } from "@/lib/theme-provider";
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { user, logout, isAuthenticated } = useLocalAuth();
-  const colorScheme = useColorScheme();
-  const [isDarkMode, setIsDarkMode] = useState(colorScheme === "dark");
+  const { colorScheme, setColorScheme } = useThemeContext();
+
+  const handleDarkModeToggle = (value: boolean) => {
+    setColorScheme(value ? "dark" : "light");
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -44,8 +46,8 @@ export default function SettingsScreen() {
             <View className="flex-row justify-between items-center pb-4 border-b border-border">
               <Text className="text-base text-foreground">Dark Mode</Text>
               <Switch
-                value={isDarkMode}
-                onValueChange={setIsDarkMode}
+                value={colorScheme === "dark"}
+                onValueChange={handleDarkModeToggle}
                 trackColor={{ false: "#ccc", true: "#0a7ea4" }}
               />
             </View>
