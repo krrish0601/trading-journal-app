@@ -102,6 +102,8 @@ export default function RootLayout() {
             <Stack.Screen name="trade-comparison" />
             <Stack.Screen name="symbol-statistics" />
             <Stack.Screen name="monthly-summary" />
+            <Stack.Screen name="risk-reward-analytics" />
+            <Stack.Screen name="filter-trades" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

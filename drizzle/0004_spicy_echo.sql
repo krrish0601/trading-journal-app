@@ -1,0 +1,1 @@
+ALTER TABLE `trades` ADD `stoploss` decimal(10,4);

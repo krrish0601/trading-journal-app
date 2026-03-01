@@ -234,25 +234,47 @@ export default function AnalyticsScreen() {
         </View>
 
         {/* Advanced Analysis Buttons */}
-        <View className="flex-row gap-3 mb-6">
-          <TouchableOpacity
-            onPress={() => router.push("/time-of-day-metrics")}
-            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
-          >
-            <Text className="text-2xl mb-2">⏰</Text>
-            <Text className="text-xs font-semibold text-foreground text-center">
-              Time Analysis
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.push("/trade-comparison")}
-            className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
-          >
-            <Text className="text-2xl mb-2">⚖️</Text>
-            <Text className="text-xs font-semibold text-foreground text-center">
-              Compare
-            </Text>
-          </TouchableOpacity>
+        <View className="gap-3 mb-6">
+          <View className="flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => router.push("/time-of-day-metrics")}
+              className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+            >
+              <Text className="text-2xl mb-2">⏰</Text>
+              <Text className="text-xs font-semibold text-foreground text-center">
+                Time Analysis
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/trade-comparison")}
+              className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+            >
+              <Text className="text-2xl mb-2">⚖️</Text>
+              <Text className="text-xs font-semibold text-foreground text-center">
+                Compare
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => router.push("/risk-reward-analytics")}
+              className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+            >
+              <Text className="text-2xl mb-2">📊</Text>
+              <Text className="text-xs font-semibold text-foreground text-center">
+                Risk-Reward
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/filter-trades")}
+              className="flex-1 bg-surface border border-border rounded-lg p-4 items-center"
+            >
+              <Text className="text-2xl mb-2">🔍</Text>
+              <Text className="text-xs font-semibold text-foreground text-center">
+                Filter & Sort
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Summary Card */}

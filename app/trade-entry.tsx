@@ -30,6 +30,7 @@ export default function TradeEntryScreen() {
   const [exitDate, setExitDate] = useState(new Date().toISOString().split("T")[0]);
   const [exitTime, setExitTime] = useState("");
   const [exitPrice, setExitPrice] = useState("");
+  const [stoploss, setStoploss] = useState("");
   const [quantity, setQuantity] = useState("");
   const [tradeType, setTradeType] = useState<"long" | "short">("long");
   const [notes, setNotes] = useState("");
@@ -50,8 +51,8 @@ export default function TradeEntryScreen() {
   });
 
   const handleSubmit = async () => {
-    if (!symbol || !entryPrice || !exitPrice || !quantity) {
-      Alert.alert("Error", "Please fill in all required fields");
+    if (!symbol || !entryPrice || !exitPrice || !quantity || !stoploss) {
+      Alert.alert("Error", "Please fill in all required fields including stoploss");
       return;
     }
 
@@ -64,6 +65,7 @@ export default function TradeEntryScreen() {
         exitDate: new Date(exitDate),
         exitTime: exitTime || undefined,
         exitPrice: parseFloat(exitPrice),
+        stoploss: stoploss ? parseFloat(stoploss) : undefined,
         quantity: parseFloat(quantity),
         tradeType,
         notes: notes || undefined,
@@ -248,13 +250,25 @@ export default function TradeEntryScreen() {
             />
           </View>
 
-          <View>
+          <View className="mb-3">
             <Text className="text-xs text-muted mb-1">Price *</Text>
             <TextInput
               placeholder="0.00"
               placeholderTextColor="#999"
               value={exitPrice}
               onChangeText={setExitPrice}
+              keyboardType="decimal-pad"
+              className="bg-background border border-border rounded-lg p-3 text-foreground"
+            />
+          </View>
+
+          <View>
+            <Text className="text-xs text-muted mb-1">Stoploss *</Text>
+            <TextInput
+              placeholder="0.00"
+              placeholderTextColor="#999"
+              value={stoploss}
+              onChangeText={setStoploss}
               keyboardType="decimal-pad"
               className="bg-background border border-border rounded-lg p-3 text-foreground"
             />

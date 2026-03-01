@@ -36,6 +36,7 @@ export const trades = mysqlTable("trades", {
   exitDate: timestamp("exitDate").notNull(),
   exitTime: varchar("exitTime", { length: 5 }),
   exitPrice: decimal("exitPrice", { precision: 10, scale: 4 }).notNull(),
+  stoploss: decimal("stoploss", { precision: 10, scale: 4 }),
   quantity: decimal("quantity", { precision: 12, scale: 4 }).notNull(),
   tradeType: mysqlEnum("tradeType", ["long", "short"]).notNull(),
   notes: text("notes"),

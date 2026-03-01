@@ -95,3 +95,11 @@
 ## Bug Fixes - Phase 8
 
 - [x] Fix analytics screen crash in EquityCurve component
+
+## Phase 9 - Advanced Risk Management & Filtering
+
+- [x] Add stoploss field to trade entry form
+- [x] Implement risk-to-reward ratio (RRR) calculations for each trade
+- [x] Calculate portfolio breakeven based on RRR
+- [x] Create risk-reward analytics screen
+- [x] Implement trade filtering and sorting by multiple criteria
