@@ -2,13 +2,14 @@ import { View, Text, ScrollView, TouchableOpacity, FlatList, TextInput } from "r
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useState } from "react";
 
 type SortBy = "date" | "pnl" | "symbol" | "type";
 
 export default function FilterTradesScreen() {
   const router = useRouter();
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
 
   const [sortBy, setSortBy] = useState<SortBy>("date");
   const [filterType, setFilterType] = useState<"all" | "long" | "short">("all");

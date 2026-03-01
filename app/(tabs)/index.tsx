@@ -6,11 +6,13 @@ import { TradeCard } from "@/components/trade-card";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
 import { useLocalAuth } from "@/hooks/use-local-auth";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
+import { getDeviceId } from "@/lib/device-id";
 import { useEffect, useState } from "react";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { user, isAuthenticated, loading: authLoading } = useLocalAuth();
+  const { isAuthenticated, loading: authLoading } = useLocalAuth();
   const insets = useSafeAreaInsets();
   const [todayStats, setTodayStats] = useState({
     trades: 0,
@@ -18,10 +20,16 @@ export default function HomeScreen() {
     wins: 0,
   });
 
+  const [deviceId, setDeviceId] = useState<string>("");
+
+  useEffect(() => {
+    getDeviceId().then(setDeviceId);
+  }, []);
+
   // Fetch trades
   const { data: trades = [], isLoading: tradesLoading, refetch } = trpc.trades.list.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
+    { deviceId },
+    { enabled: !!deviceId }
   );
 
   // Fetch today's metrics
@@ -31,8 +39,8 @@ export default function HomeScreen() {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   const { data: todayMetrics } = trpc.trades.getMetrics.useQuery(
-    { startDate: today, endDate: tomorrow },
-    { enabled: isAuthenticated }
+    { deviceId, startDate: today, endDate: tomorrow },
+    { enabled: !!deviceId }
   );
 
   useEffect(() => {

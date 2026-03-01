@@ -8,6 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useState } from "react";
 
 interface MonthlySummary {
@@ -26,7 +27,7 @@ interface MonthlySummary {
 
 export default function MonthlySummaryScreen() {
   const router = useRouter();
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   // Calculate monthly summaries

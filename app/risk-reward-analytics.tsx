@@ -2,12 +2,13 @@ import { View, Text, ScrollView, FlatList, TouchableOpacity } from "react-native
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useColors } from "@/hooks/use-colors";
 
 export default function RiskRewardAnalyticsScreen() {
   const router = useRouter();
   const colors = useColors();
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
 
   // Calculate risk-to-reward ratio for each trade
   const tradesWithRRR = trades.map((trade) => {

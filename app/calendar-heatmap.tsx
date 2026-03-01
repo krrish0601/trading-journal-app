@@ -9,6 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useState } from "react";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -29,7 +30,7 @@ const MONTHS = [
 
 export default function CalendarHeatmapScreen() {
   const router = useRouter();
-  const { data: trades = [], isLoading } = trpc.trades.list.useQuery();
+  const { data: trades = [], isLoading } = useDeviceTrades();
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 

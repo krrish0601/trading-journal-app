@@ -5,8 +5,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 
-// Local user ID for offline trading journal
-const LOCAL_USER_ID = 1;
+// Device ID is passed from client to ensure data isolation per device
+// This replaces the hardcoded LOCAL_USER_ID approach
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -23,16 +23,19 @@ export const appRouter = router({
   }),
 
   trades: router({
-    list: publicProcedure.query(({ ctx }) => db.getUserTrades(LOCAL_USER_ID)),
+    list: publicProcedure
+      .input(z.object({ deviceId: z.string() }))
+      .query(({ input }) => db.getUserTrades(parseInt(input.deviceId) || 1)),
     listByDateRange: publicProcedure
-      .input(z.object({ startDate: z.date(), endDate: z.date() }))
-      .query(({ ctx, input }) => db.getUserTrades(LOCAL_USER_ID, input.startDate, input.endDate)),
+      .input(z.object({ deviceId: z.string(), startDate: z.date(), endDate: z.date() }))
+      .query(({ input }) => db.getUserTrades(parseInt(input.deviceId) || 1, input.startDate, input.endDate)),
     get: publicProcedure
       .input(z.object({ id: z.number() }))
       .query(({ input }) => db.getTrade(input.id)),
     create: publicProcedure
       .input(
         z.object({
+          deviceId: z.string(),
           symbol: z.string().min(1).max(20),
           entryDate: z.date(),
           entryTime: z.string().optional(),
@@ -54,7 +57,7 @@ export const appRouter = router({
           : (input.entryPrice - input.exitPrice) * input.quantity;
         const pnlPercent = ((input.exitPrice - input.entryPrice) / input.entryPrice) * 100;
         return db.createTrade({
-          userId: LOCAL_USER_ID,
+          userId: parseInt(input.deviceId) || 1,
           symbol: input.symbol,
           entryDate: input.entryDate,
           entryTime: input.entryTime,
@@ -112,8 +115,8 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => db.deleteTrade(input.id)),
     getMetrics: publicProcedure
-      .input(z.object({ startDate: z.date(), endDate: z.date() }))
-      .query(({ ctx, input }) => db.getPerformanceMetrics(LOCAL_USER_ID, input.startDate, input.endDate)),
+      .input(z.object({ deviceId: z.string(), startDate: z.date(), endDate: z.date() }))
+      .query(({ input }) => db.getPerformanceMetrics(parseInt(input.deviceId) || 1, input.startDate, input.endDate)),
   }),
 });
 

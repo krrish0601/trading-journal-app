@@ -9,16 +9,22 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getDeviceId } from "@/lib/device-id";
 
 export default function TradeDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [isEditing, setIsEditing] = useState(false);
+  const [deviceId, setDeviceId] = useState<string>("");
+
+  useEffect(() => {
+    getDeviceId().then(setDeviceId);
+  }, []);
 
   const tradeId = typeof id === "string" ? parseInt(id) : 0;
 
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = trpc.trades.list.useQuery({ deviceId }, { enabled: !!deviceId });
   const trade = trades.find((t) => t.id === tradeId);
 
   const deleteMutation = trpc.trades.delete.useMutation({

@@ -11,6 +11,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { TradeCard } from "@/components/trade-card";
 import { DatePicker } from "@/components/date-picker";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useState } from "react";
 
 export default function SearchTradesScreen() {
@@ -23,7 +24,7 @@ export default function SearchTradesScreen() {
   );
   const [searchSymbol, setSearchSymbol] = useState("");
 
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
 
   // Filter trades by date range and symbol
   const filteredTrades = trades.filter((trade) => {

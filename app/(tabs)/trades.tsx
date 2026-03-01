@@ -4,16 +4,22 @@ import { ScreenContainer } from "@/components/screen-container";
 import { TradeCard } from "@/components/trade-card";
 import { trpc } from "@/lib/trpc";
 import { useLocalAuth } from "@/hooks/use-local-auth";
-import { useState } from "react";
+import { getDeviceId } from "@/lib/device-id";
+import { useState, useEffect } from "react";
 
 export default function TradesScreen() {
   const router = useRouter();
   const { isAuthenticated } = useLocalAuth();
   const [filterType, setFilterType] = useState<"all" | "long" | "short">("all");
+  const [deviceId, setDeviceId] = useState<string>("");
+
+  useEffect(() => {
+    getDeviceId().then(setDeviceId);
+  }, []);
 
   const { data: trades = [], isLoading } = trpc.trades.list.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
+    { deviceId },
+    { enabled: !!deviceId }
   );
 
   const filteredTrades = trades.filter((trade) => {

@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { generateCSV, generateSummaryReport } from "@/lib/export-utils";
 import { useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
@@ -19,7 +20,7 @@ export default function ExportTradesScreen() {
   const router = useRouter();
   const [isExporting, setIsExporting] = useState(false);
 
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
 
   const handleExportCSV = async () => {
     try {

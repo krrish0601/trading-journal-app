@@ -10,10 +10,19 @@ import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { TradeCard } from "@/components/trade-card";
 import { trpc } from "@/lib/trpc";
+import React from "react";
 
 export default function TradesGroupedScreen() {
   const router = useRouter();
-  const { data: trades = [], isLoading } = trpc.trades.list.useQuery();
+  const [deviceId, setDeviceId] = React.useState<string>("");
+
+  React.useEffect(() => {
+    import("@/lib/device-id").then((mod) => {
+      mod.getDeviceId().then(setDeviceId);
+    });
+  }, []);
+
+  const { data: trades = [], isLoading } = trpc.trades.list.useQuery({ deviceId }, { enabled: !!deviceId });
 
   if (isLoading) {
     return (

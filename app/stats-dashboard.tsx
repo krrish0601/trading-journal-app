@@ -9,10 +9,11 @@ import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 
 export default function StatsDashboardScreen() {
   const router = useRouter();
-  const { data: trades = [], isLoading } = trpc.trades.list.useQuery();
+  const { data: trades = [], isLoading } = useDeviceTrades();
 
   if (isLoading) {
     return (

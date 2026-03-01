@@ -8,6 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 
 interface SymbolStats {
   symbol: string;
@@ -24,7 +25,7 @@ interface SymbolStats {
 
 export default function SymbolStatisticsScreen() {
   const router = useRouter();
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
 
   // Calculate statistics by symbol
   const calculateSymbolStats = (): SymbolStats[] => {

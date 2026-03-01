@@ -4,7 +4,8 @@ import { ScreenContainer } from "@/components/screen-container";
 import { StatsCard } from "@/components/stats-card";
 import { trpc } from "@/lib/trpc";
 import { useLocalAuth } from "@/hooks/use-local-auth";
-import { useState } from "react";
+import { getDeviceId } from "@/lib/device-id";
+import { useState, useEffect } from "react";
 import { PerformanceChart } from "@/components/performance-chart";
 import { EquityCurve } from "@/components/equity-curve";
 
@@ -14,6 +15,11 @@ export default function AnalyticsScreen() {
   const router = useRouter();
   const { isAuthenticated } = useLocalAuth();
   const [period, setPeriod] = useState<TimePeriod>("weekly");
+  const [deviceId, setDeviceId] = useState<string>("");
+
+  useEffect(() => {
+    getDeviceId().then(setDeviceId);
+  }, []);
 
   // Calculate date ranges based on period
   const getDateRange = (p: TimePeriod) => {
@@ -38,8 +44,8 @@ export default function AnalyticsScreen() {
   const { startDate, endDate } = getDateRange(period);
 
   const { data: trades = [] } = trpc.trades.list.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
+    { deviceId },
+    { enabled: !!deviceId }
   );
 
   // Filter trades for the selected period
@@ -55,8 +61,8 @@ export default function AnalyticsScreen() {
   }));
 
   const { data: metrics, isLoading } = trpc.trades.getMetrics.useQuery(
-    { startDate, endDate },
-    { enabled: isAuthenticated }
+    { deviceId, startDate, endDate },
+    { enabled: !!deviceId }
   );
 
 

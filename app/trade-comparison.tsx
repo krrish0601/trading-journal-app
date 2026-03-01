@@ -8,6 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useState } from "react";
 
 interface Trade {
@@ -26,7 +27,7 @@ interface Trade {
 
 export default function TradeComparisonScreen() {
   const router = useRouter();
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
   const [selectedTrades, setSelectedTrades] = useState<Trade[]>([]);
 
   const toggleTradeSelection = (trade: Trade) => {

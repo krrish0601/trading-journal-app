@@ -12,6 +12,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
+import { useDeviceTrades } from "@/hooks/use-device-trades";
 import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useState } from "react";
 import React from "react";
@@ -23,7 +24,7 @@ export default function TradeEditScreen() {
   const { isAuthenticated } = useLocalAuth();
 
   const tradeId = typeof id === "string" ? parseInt(id) : 0;
-  const { data: trades = [] } = trpc.trades.list.useQuery();
+  const { data: trades = [] } = useDeviceTrades();
   const trade = trades.find((t) => t.id === tradeId);
 
   const [symbol, setSymbol] = useState(trade?.symbol || "");

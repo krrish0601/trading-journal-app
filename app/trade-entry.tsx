@@ -18,6 +18,7 @@ import { useState } from "react";
 import React from "react";
 import { DatePicker } from "@/components/date-picker";
 import { ImagePickerModal } from "@/components/image-picker-modal";
+import { getDeviceId } from "@/lib/device-id";
 
 export default function TradeEntryScreen() {
   const router = useRouter();
@@ -39,6 +40,12 @@ export default function TradeEntryScreen() {
   const [currency, setCurrency] = useState<"USD" | "INR">("INR");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [deviceId, setDeviceId] = useState<string>("");
+
+  // Initialize device ID on mount
+  React.useEffect(() => {
+    getDeviceId().then(setDeviceId);
+  }, []);
 
   const createMutation = trpc.trades.create.useMutation({
     onSuccess: () => {
@@ -51,13 +58,14 @@ export default function TradeEntryScreen() {
   });
 
   const handleSubmit = async () => {
-    if (!symbol || !entryPrice || !exitPrice || !quantity || !stoploss) {
+    if (!symbol || !entryPrice || !exitPrice || !quantity || !stoploss || !deviceId) {
       Alert.alert("Error", "Please fill in all required fields including stoploss");
       return;
     }
 
     try {
       await createMutation.mutateAsync({
+        deviceId,
         symbol: symbol.toUpperCase(),
         entryDate: new Date(entryDate),
         entryTime: entryTime || undefined,
